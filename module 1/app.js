@@ -9,13 +9,16 @@ angular.module('LunchChecker', [])
   $scope.checkIfTooMuch = function () {
       if($scope.dishes == "") {
           $scope.message = "Please enter data first";
-      } else {
+      } 
+      else {
           var items = itemsInText($scope.dishes);
-          if(items == 0 || $scope.dishes == "") {
+          if($scope.dishes == "" || items == 0) {
               $scope.message = "Empty data";
-          } else if(items <= 3) {
+          } 
+          else if(items <= 3) {
               $scope.message = "Enjoy!";
-          } else {
+          } 
+          else {
               $scope.message = "Too much!";
           }
       }
