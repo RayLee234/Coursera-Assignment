@@ -1,7 +1,7 @@
 <!doctype html>
 <html ng-app='NarrowItDownApp' lang="en">
   <head>
-    <title>Narrow Down Your Menu Choice</title>
+    <title>Assignment for Module 3 by Ray</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="angular.min.js"></script>
     <script src="app.js"></script>
@@ -10,13 +10,13 @@
   </head>
 <body>
    <div ng-controller="NarrowItDownController as narrowCtrl" class="container">
-    <h1>Narrow Down Your Chinese Menu Choice</h1>
+    <h1>Narrow Down Menu Choices</h1>
 
     <div class="form-group">
-      <input ng-model="narrowCtrl.searchTerm" type="text" placeholder="search term" class="form-control">
+      <input ng-model="narrowCtrl.searchTerm" type="text" class="form-control">
     </div>
     <div class="form-group narrow-button">
-      <button ng-click="narrowCtrl.searchMenuItems()" class="btn btn-primary">Narrow It Down For Me!</button>
+      <button ng-click="narrowCtrl.searchMenuItems()">Narrow It Down For Me!</button>
     </div>
 
     <p><br/><hr/></p>
