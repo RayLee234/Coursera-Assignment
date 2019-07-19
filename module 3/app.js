@@ -1,95 +1,94 @@
 (function () {
-  'use strict'
+'use strict';
 
-angular.module('NarrowItDownApp', [])
-.controller('NarrowItDownController', NarrowItDownController)
-.service('MenuSearchService', MenuSearchService)
-.directive('foundItems', FoundItemsDirective)
-.constant('ApiBasePath', "http://davids-restaurant.herokuapp.com");
+angular.module('MenuItemsApp', [])
+.controller('MenuItemsController', MenuItemsController)
+.service('MenuItemsService', MenuItemsService)
+.constant('ApiBasePath', "http://davids-restaurant.herokuapp.com")
+.directive('foundItems', ItemsListDirective);
 
 
-NarrowItDownController.$inject = ['MenuSearchService'];
-function NarrowItDownController(MenuSearchService) {
-  var narrowCtrl = this;
-  narrowCtrl.found = MenuSearchService.getItems();
-  narrowCtrl.searchMenuItems = function () {
-    if (narrowCtrl.searchTerm === "") {
-      MenuSearchService.clear();
-    } else {
-      MenuSearchService.getMatchedMenuItems(narrowCtrl.searchTerm)
-      .then(function(result) {
-        narrowCtrl.found = result;
-      });
-    }
-  }
-
-  narrowCtrl.removeItem = function(itemIndex) {
-    MenuSearchService.removeItem(itemIndex);
-  };
-}
-
-function FoundItemsDirective() {
+function ItemsListDirective() {
   var ddo = {
-    templateUrl: 'foundItems.html',
+    templateUrl: 'itemsList.html',
     scope: {
       items: '<',
+      myTitle: '@title',
       onRemove: '&'
     },
-    controller: FoundItemsDirectiveController,
-    controllerAs: 'foundCtrl',
+    controller: MenuItemsDirectiveController,
+    controllerAs: 'menu',
     bindToController: true
   };
 
   return ddo;
 }
 
-function FoundItemsDirectiveController() {
-  var foundCtrl = this;
 
-  foundCtrl.isNothingFound = function() {
-    if (foundCtrl.items.length === 0) {
-      return true;
-    }
-    return false;
-  };
+function MenuItemsDirectiveController() {
+  var menu = this;
+
+  menu.isEmpty = function() {
+    return menu.items.length === 0;
+  }
 }
 
-MenuSearchService.$inject = ['$http', 'ApiBasePath'];
-function MenuSearchService($http, ApiBasePath) {
-  var service = this;
-  var foundItems = [];
 
-  service.getMatchedMenuItems = function(searchTerm) {
-    foundItems.splice(0, foundItems.length);
-    if (searchTerm === "") {
-      return foundItems;
+MenuItemsController.$inject = ['MenuItemsService'];
+function MenuItemsController(MenuItemsService) {
+  var menu = this;
+  menu.items = [];
+  menu.searchTerm = "";
+  menu.logMenuItems = function () {
+    if(menu.searchTerm != "") {
+      var promise = MenuItemsService.getMatchedMenuItems(menu.searchTerm);
+
+      promise.then(function (response) {
+        console.log(response);
+        menu.items = response;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    } else {
+      menu.items = [];
     }
-    return $http({
-      method: "GET",
-      url: (ApiBasePath + "/menu_items.json")
-    }).then(function(result) {
-      var allItems = result.data.menu_items;
-      foundItems.splice(0, foundItems.length);
-      for (var index = 0; index < allItems.length; ++index) {
-        if (allItems[index].description.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1) {
-          foundItems.push(allItems[index]);
-        }
-      }
-      return foundItems;
-    });
+
   };
 
-  service.clear = function() {
-    foundItems.splice(0, foundItems.length);
-  }
-
-  service.removeItem = function(itemIndex) {
-    foundItems.splice(itemIndex, 1);
+  menu.removeItem = function(index) {
+      menu.items.splice(index, 1);
   };
 
-  service.getItems = function() {
-    return foundItems;
-  };
+}
+
+
+MenuItemsService.$inject = ['$http', 'ApiBasePath']
+function MenuItemsService($http, ApiBasePath) {
+  var service = this;
+
+       service.getMatchedMenuItems = function(searchTerm) {
+         return $http({
+           method: "GET",
+           url: ("https://davids-restaurant.herokuapp.com/menu_items.json")
+         })
+         .then(function(response) {
+
+           // process all results
+           var items = response.data.menu_items;
+           var foundItems = [];
+
+           for (var i = 0; i < items.length; i++) {
+
+             if (items[i].description.toLowerCase().indexOf(searchTerm.toLowerCase()) >= 0) {
+               foundItems.push(items[i]);
+             }
+           }
+           return foundItems;
+         });
+
+       };
+
 }
 
 })();
