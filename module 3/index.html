@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en" ng-app='MenuItemsApp'>
   <head>
-    <title>Narrow Down Your Menu Choice</title>
+    <title>Assignment for Module 3 by Ray</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="angular.min.js"></script>
         <script src="app.js"></script>
@@ -10,13 +10,13 @@
   </head>
 <body>
    <div class="container" ng-controller="MenuItemsController as menu">
-    <h1>Narrow Down Your Chinese Menu Choice</h1>
+    <h2>Narrow Down Your Choices</h2>
 
     <div class="form-group">
-      <input type="text" placeholder="search term" class="form-control" ng-model="menu.searchTerm">
+      <input type="text" class="form-control" ng-model="menu.searchTerm">
     </div>
     <div class="form-group narrow-button">
-      <button class="btn btn-primary" ng-click="menu.logMenuItems()">Narrow It Down For Me!</button>
+      <button ng-click="menu.logMenuItems()">Narrow It Down</button>
     </div>
 
     <!-- found-items should be implemented as a component -->
